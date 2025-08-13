@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="https://applicants.isatu.edu.ph/images/logo.png">
+    <title>Certificate Verification - ISATU Student Republic</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+</head>
+<body>
+
+     <!-- IMPORTANT: DO NOT DELETE THIS COMMENT BLOCK
+    
+    https://www.youtube.com/watch?v=dQw4w9WgXcQ
+
+    https://www.youtube.com/watch?v=dQw4w9WgXcQ
+
+    https://www.youtube.com/watch?v=dQw4w9WgXcQ -->
+
+    <div class="main-container">
+        <div class="verification-container">
+            <header class="header-container">
+                <div class="logo-group">
+                    <img src="https://applicants.isatu.edu.ph/images/logo.png" alt="ISATU Logo" class="logo">
+                    <div class="logo-text">
+                        <p>Iloilo Science and Technology University</p>
+                        <span>STUDENT REPUBLIC - MAIN CAMPUS</span>
+                    </div>
+                </div>
+                <img src="./assets/images/sr.png" alt="Student Republic Logo" class="logo sr-logo" id="sr-logo">
+            </header>
+
+            <main class="content-wrapper">
+              
+                <div id="form-view">
+                    <h1>CERTIFICATE<br>VERIFICATION</h1>
+                    <p class="subtitle">Enter your CERTIFICATE NO. manually, or use the QR Code to scan the given QR on your certificate.</p>
+
+                    <form id="verification-form">
+                        <div class="input-group">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Lock_Icon.svg/2048px-Lock_Icon.svg.png" alt="Lock Icon">
+                            <input type="text" id="certificate-no-input" placeholder="Enter Certificate No." required>
+                        </div>
+                        <div class="button-group">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="button" id="scan-qr-btn" class="btn btn-secondary">Scan QR Code</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="scanner-view" class="hidden">
+                    <div id="qr-reader" style="width: 100%;"></div>
+                    <h2>Verify Certificate</h2>
+                    <p class="subtitle">QR Code Scanner</p>
+                    <div class="button-group-scanner">
+                         <button type="button" id="scan-again-btn" class="btn btn-primary">Scan Again</button>
+                         <button type="button" id="enter-manual-btn" class="btn btn-secondary">Enter Certificate No.</button>
+                    </div>
+                </div>
+            </main>
+
+        </div>
+
+        <div class="decorative-container">
+          
+            <div id="result-view" class="verification-result hidden">
+    <div class="result-card">
+        <div class="icon-container">
+       
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="48" height="48">
+                <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+            </svg>
+        </div>
+        <div id="result-recipient" class="recipient-name">Recipient Name Here</div>
+        <hr class="divider">
+        <div class="details-section">
+            <div class="detail-item">
+                <span class="label">Certificate Type:</span>
+                <span id="result-type" class="value"></span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Event Name:</span>
+                <span id="result-event" class="value"></span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Theme:</span>
+                <span id="result-theme" class="value"></span>
+            </div>
+             <div class="detail-item">
+                  <span class="label">Date Given:</span>
+                  <span id="result-date" class="value"></span>
+    </div>
+        </div>
+        <button id="verify-again-btn" class="btn btn-primary">Verify Another Certificate</button>
+    </div>
+</div>
+        </div>
+    </div>
+
+    <script src="./assets/js/main.js"></script>
+</body>
+</html>
