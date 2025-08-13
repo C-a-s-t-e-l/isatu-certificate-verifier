@@ -1,11 +1,11 @@
 {
-  "name": "certificate-verifier-backend",
+  "name": "isatu-certificate-verifier",
   "version": "1.0.0",
-  "description": "Backend for ISATU Certificate Verifier",
-  "main": "server.js",
+  "description": "ISATU Certificate Verification System",
+  "main": "api/index.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "node api/index.js",
+    "dev": "nodemon api/index.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.55.0",
