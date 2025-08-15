@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - ISATU SR</title>
+    <link rel="stylesheet" href="./assets/css/login.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-form-panel">
+            <div class="login-header">
+                <h1>Admin<br>Panel<br>Login</h1>
+                <p>ISATU STUDENT REPUBLIC</p>
+            </div>
+            <form id="login-form">
+                <label for="email">Email</label>
+                <input type="email" id="email" required autocomplete="email">
+                
+                <label for="password">Password</label>
+                <input type="password" id="password" required autocomplete="current-password">
+                
+                <p id="error-message" class="error-text hidden"></p>
+                <button type="submit" id="login-btn" class="btn btn-dark">Login</button>
+            </form>
+        </div>
+        <div class="login-logo-panel">
+            <img src="https://applicants.isatu.edu.ph/images/logo.png" alt="ISATU Logo">
+        </div>
+    </div>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script defer src="./assets/js/supabase-client.js"></script>
+    <script defer src="./assets/js/login.js"></script>
+</body>
+</html>

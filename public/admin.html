@@ -1,137 +1,421 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="https://applicants.isatu.edu.ph/images/logo.png">
-    <title>Admin - Generate Certificate - ISATU SR</title>
-    <link rel="stylesheet" href="./assets/css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-
-     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
-</head>
-<body>
-
- <!-- IMPORTANT: DO NOT DELETE THIS COMMENT BLOCK
-    
-    https://www.youtube.com/watch?v=dQw4w9WgXcQ
-
-    https://www.youtube.com/watch?v=dQw4w9WgXcQ
-
-    https://www.youtube.com/watch?v=dQw4w9WgXcQ -->
-
-    <div class="main-container">
-        <div class="verification-container" style="flex: 1;"> 
-            <header class="header-container">
-             
-                 <div class="logo-group">
-                    <img src="https://applicants.isatu.edu.ph/images/logo.png" alt="ISATU Logo" class="logo">
-                    <div class="logo-text">
-                        <p>Iloilo Science and Technology University</p>
-                        <span>STUDENT REPUBLIC - MAIN CAMPUS</span>
-                    </div>
-                </div>
-                <img src="./assets/images/sr.png" alt="Student Republic Logo" id="sr-logo" class="logo sr-logo">
-            </header>
-
-            <main class="content-wrapper" style="justify-content: flex-start; padding-top: 2rem;">
-            
-                <div id="admin-form-view">
-                    <h1>Generate Certificate</h1>
-                    <div class="mode-toggle">
-            <button id="show-find-btn" class="mode-btn active">Find Existing</button>
-            <button id="show-bulk-btn" class="mode-btn">Bulk Add</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="https://applicants.isatu.edu.ph/images/logo.png"
+    />
+    <title>Admin - Certificate Management - ISATU SR</title>
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <link rel="stylesheet" href="./assets/css/admin.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="header-left">
+        <img
+          src="https://applicants.isatu.edu.ph/images/logo.png"
+          alt="ISATU Logo"
+          class="logo"
+        />
+      </div>
+      <div class="header-center">
+        <p>Iloilo Science and Technology University</p>
+        <span>ADMIN PANEL - STUDENT REPUBLIC</span>
+      </div>
+      <div class="header-right">
+        <div class="user-profile-icon">
+          <img src="./assets/images/sr.png" alt="Student Republic Logo" />
         </div>
-                    <p class="subtitle">Fill in the details for a single certificate.</p>
+        <button id="logout-btn" class="btn btn-secondary">Logout</button>
+      </div>
+    </header>
 
-                    <form id="generate-form" class="admin-form">
-                        <div class="input-group"><input type="email" id="encoder-email" placeholder="Encoder Email" required></div>
-                        <div class="input-group"><input type="text" id="encoder-name" placeholder="Encoder Name" required></div>
-                        <div class="input-group"><input type="text" id="recipient-name" placeholder="Certificate Recipient" required></div>
-                        <div class="input-group"><input type="text" id="event-name" placeholder="Event Name" required></div>
-                        <div class="input-group">
-                            <select id="certificate-type" required>
-                                <option value="" disabled selected>Select Certificate Type</option>
-                                <option value="Appreciation">Appreciation</option>
-                                <option value="Recognition">Recognition</option>
-                                <option value="Participation">Participation</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                             <select id="role-select" required>
-                                <option value="" disabled selected>Select Role</option>
-                                <option value="Participant">Participant</option>
-                                <option value="Facilitator">Facilitator</option>
-                                <option value="Other">Other...</option>
-                            </select>
-                        </div>
-                        <div class="input-group hidden" id="other-role-group">
-                            <input type="text" id="other-role-input" placeholder="Specify Other Role">
-                        </div>
-                        <div class="input-group"><input type="text" id="venue" placeholder="Venue" required></div>
-                        <div class="input-group"><input type="text" id="theme" placeholder="Theme" required></div>
-                        <div class="input-group"><input type="date" id="date-given" placeholder="Date Given" required></div>
-
-                        <div class="button-group">
-                            <button type="submit" class="btn btn-primary">Generate Certificate</button>
-                        </div>
-                    </form>
-                </div>
-            </main>
-        </div>
-
-        <div class="decorative-container" style="flex: 1;">
-              <div id="find-view">
-        <h2>Find Existing Certificate</h2>
-        <p class="subtitle" style="color: white; max-width: none;">
-            Enter a control number to view its details and re-generate its QR code.
+    <main class="main-content">
+      <div class="page-header">
+        <h1 id="page-title">Create Certificate</h1>
+        <p id="page-subtitle" class="subtitle">
+          Fill in the details for a single certificate.
         </p>
-        <form id="find-form">
-            <div class="input-group">
-                <input type="text" id="find-control-no-input" placeholder="Enter Control Number" required>
+      </div>
+
+      <div class="admin-tabs">
+        <button id="create-tab-btn" class="tab-btn active">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="btn-icon"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span>Create</span>
+        </button>
+        <button id="manage-tab-btn" class="tab-btn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="btn-icon"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"
+            />
+          </svg>
+          <span>Manage</span>
+        </button>
+        <button id="find-tab-btn" class="tab-btn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="btn-icon"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+            />
+          </svg>
+          <span>Find Existing</span>
+        </button>
+        <button id="bulk-add-tab-btn" class="tab-btn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="btn-icon"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 13.5l3 3m0 0l3-3m-3 3v-6m1.06-4.19l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
+            />
+          </svg>
+          <span>Bulk Add</span>
+        </button>
+      </div>
+
+      <div id="create-view">
+        <div class="admin-content-body">
+          <div class="card form-card">
+            <form id="generate-form">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="encoder-email">Encoder Email</label
+                  ><input
+                    type="email"
+                    id="encoder-email"
+                    placeholder="encoder@isatu.edu.ph"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="encoder-name">Encoder Name</label
+                  ><input
+                    type="text"
+                    id="encoder-name"
+                    placeholder="Full Name"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="recipient-name">Certificate Recipient</label
+                ><input
+                  type="text"
+                  id="recipient-name"
+                  placeholder="Full Name of Recipient"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="event-name">Event Name</label
+                ><input
+                  type="text"
+                  id="event-name"
+                  placeholder="Name of the Event"
+                  required
+                />
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="certificate-type">Select Certificate Type</label
+                  ><select id="certificate-type" required>
+                    <option value="" disabled selected>
+                      Choose certificate type
+                    </option>
+                    <option value="Appreciation">Appreciation</option>
+                    <option value="Recognition">Recognition</option>
+                    <option value="Participation">Participation</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="role-select">Select Role</label
+                  ><select id="role-select" required>
+                    <option value="" disabled selected>Choose role</option>
+                    <option value="Participant">Participant</option>
+                    <option value="Facilitator">Facilitator</option>
+                    <option value="Other">Other...</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group hidden" id="other-role-group">
+                <label for="other-role-input">Specify Other Role</label
+                ><input
+                  type="text"
+                  id="other-role-input"
+                  placeholder="e.g., Speaker, Organizer"
+                />
+              </div>
+              <div class="form-group">
+                <label for="venue">Venue</label
+                ><input
+                  type="text"
+                  id="venue"
+                  placeholder="Event Venue"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="theme">Theme</label
+                ><textarea
+                  id="theme"
+                  rows="2"
+                  placeholder="Event Theme or Description"
+                  required
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label for="date-given">Date Given</label
+                ><input type="date" id="date-given" required />
+              </div>
+              <button type="submit" class="btn btn-primary full-width">
+                Generate Certificate
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div id="manage-view" class="hidden">
+        <div class="card">
+          <div class="manage-view-header">
+            <input
+              type="search"
+              id="search-input"
+              placeholder="Search by name, event, or control no..."
+            />
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Recipient Name</th>
+                  <th>Event Name</th>
+                  <th>Date Given</th>
+                  <th>Control Number</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="certificates-table-body"></tbody>
+            </table>
+          </div>
+          <div class="pagination-controls">
+            <span id="page-info"></span>
+            <div class="button-group">
+              <button id="prev-page-btn" class="btn btn-outline">
+                Previous</button
+              ><button id="next-page-btn" class="btn btn-outline">Next</button>
             </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Find Certificate</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="find-view" class="hidden">
+        <div class="admin-content-body">
+          <div class="card">
+            <form id="find-form">
+              <div class="form-group">
+                <label for="find-control-no-input">Enter Control Number</label
+                ><input
+                  type="text"
+                  id="find-control-no-input"
+                  placeholder="ISATU-SR-XX-25-XXXXX"
+                  required
+                />
+              </div>
+              <button type="submit" class="btn btn-dark full-width">
+                Find Certificate & Generate QR
+              </button>
+            </form>
+            <div
+              id="find-result-container"
+              class="find-result-container hidden"
+            >
+              <h3 id="found-recipient-name" class="recipient-name-header"></h3>
+              <div class="qr-code-display">
+                <img id="generated-qr-code" src="" alt="Generated QR Code" />
+              </div>
+              <p id="generated-control-number" class="certificate-id"></p>
+              <div class="button-group" style="justify-content: center">
+                <button id="save-qr-btn" class="btn btn-outline">Save QR</button
+                ><button id="copy-qr-image-btn" class="btn btn-outline">
+                  Copy QR</button
+                ><button id="copy-control-no-btn" class="btn btn-outline">
+                  Copy No.
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="bulk-add-view" class="hidden">
+        <div class="admin-content-body">
+          <div class="card bulk-card">
+            <div class="card-header-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9 13.5l3 3m0 0l3-3m-3 3v-6m1.06-4.19l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
+                />
+              </svg>
+              <h3>Bulk Add Certificates</h3>
+            </div>
+            <p class="card-subtitle">
+              Copy and paste data from your Google Sheet. Do not include the
+              header row.
+            </p>
+            <div class="required-columns-info">
+              <strong>Required Columns (11):</strong><br />Timestamp | Encoder
+              Email | Encoder Name | Recipient | Event | Type | Role | Venue |
+              Theme | Date Given | Control Number
+            </div>
+            <textarea
+              id="bulk-data-input"
+              placeholder="8/13/2025...	encoder@...	Encoder Name	... (paste rows here)"
+            ></textarea>
+            <div class="button-group">
+              <button id="preview-bulk-btn" class="btn btn-outline">
+                Preview</button
+              ><button id="process-bulk-btn" class="btn btn-primary" disabled>
+                Process Bulk Data
+              </button>
+            </div>
+          </div>
+          <div class="card side-card">
+    
+    <div id="bulk-results-container">
+     
+        <div class="card-header-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+             <h3>Bulk Import Preview</h3>
+        </div>
+        <div id="bulk-preview-area">
+            <p class="card-subtitle">Click "Preview" to see a summary of your data before importing.</p>
+        </div>
+    </div>
+</div>
+        </div>
+      </div>
+    </main>
+
+    <div class="modal-overlay" id="app-modal">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3 class="modal-title" id="modal-title">Notification</h3>
+        </div>
+        <p class="modal-message" id="modal-message">
+          This is a sample message.
+        </p>
+        <div class="modal-footer">
+          <button class="btn btn-dark" id="modal-ok-btn">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPLACE the old #edit-modal with this new version -->
+<div class="modal-overlay" id="edit-modal">
+    <div class="modal-container">
+        <form id="edit-form">
+            <h3 class="edit-modal-title">Edit Certificate</h3>
+            <div class="form-row">
+                <span class="form-label">Control Number</span>
+                <span id="edit-control-number" class="form-value"></span>
+            </div>
+            <div class="form-row">
+                <label for="edit-recipient-name" class="form-label">Recipient Name</label>
+                <input type="text" id="edit-recipient-name" required>
+            </div>
+            <div class="form-row">
+                <label for="edit-event-name" class="form-label">Event Name</label>
+                <input type="text" id="edit-event-name" required>
+            </div>
+            <div class="form-row">
+                <div class="form-half">
+                    <label for="edit-certificate-type" class="form-label">Certificate Type</label>
+                    <select id="edit-certificate-type" required>
+                        <option value="Appreciation">Appreciation</option>
+                        <option value="Recognition">Recognition</option>
+                        <option value="Participation">Participation</option>
+                    </select>
+                </div>
+                <div class="form-half">
+                    <label for="edit-role" class="form-label">Role</label>
+                    <input type="text" id="edit-role" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <label for="edit-date-given" class="form-label">Date Given</label>
+                <input type="date" id="edit-date-given" required>
+            </div>
+            <div class="edit-modal-footer">
+                <button type="button" id="edit-cancel-btn" class="btn btn-outline">Cancel</button>
+                <button type="submit" class="btn btn-dark">Save Changes</button>
+            </div>
         </form>
     </div>
-           <div id="generation-result-view" class="generation-result hidden">
-    <h2>CERTIFICATE<br>GENERATED!</h2>
-    <div class="qr-code-display">
-        <img id="generated-qr-code" src="" alt="Generated QR Code">
-    </div>
-    <p class="result-label">Control Number:</p>
-    <p id="generated-control-number" class="control-number-display"></p>
-    
-    <div class="result-actions">
-        <button id="save-qr-btn" class="btn btn-secondary">Save QR Code</button>
-        <button id="copy-control-no-btn" class="btn btn-secondary">Copy Control No.</button>
-    </div>
-    
-    <button id="generate-new-btn" class="btn btn-primary">Generate Another</button>
 </div>
 
-           <div id="bulk-add-view">
-    <h2>Bulk Add Certificates</h2>
-    <p class="subtitle" style="color: white; max-width: none;">
-        Paste one or more rows from your Google Sheet. **Do not include the header row**.
-    </p>
-    <p class="subtitle" style="color: white; font-size: 0.8rem; margin-bottom: 1rem; font-weight: 600;">
-        REQUIRED ORDER (11 Columns):<br>
-        Timestamp | Encoder Email | Encoder Name | Recipient | Event | Type | Role | Venue | Theme | Date Given | Control Number
-    </p>
-    <textarea id="bulk-data-input" placeholder="8/13/2025...	issabelle.tuson@...	Issa Belle Tuson	...	...	...	...	...	...	8/15/2025	ISATU-SR-CA..."></textarea>
-    <button id="process-bulk-btn" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Process Bulk Data</button>
-    
-        <div id="progress-bar-container" class="hidden">
-            <div class="progress-bar-slider"></div>
-        </div>
-
-<div id="bulk-status" class="hidden" style="margin-top: 1rem; color: white;"></div>
-</div>
-
-        </div>
-    </div>
-   <script src="./assets/js/admin.js"></script>
-</body>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"
+    ></script>
+    <script defer src="./assets/js/supabase-client.js"></script>
+    <script defer src="./assets/js/admin.js"></script>
+  </body>
 </html>

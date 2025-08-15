@@ -1,0 +1,142 @@
+@import url('style.css');
+
+:root {
+    --login-bg: #f0f2f5;
+    --login-card-bg: #ffffff;
+    --login-input-bg: #eef2f5;
+    --login-accent-yellow: #fecb00;
+}
+
+html {
+    box-sizing: border-box;
+}
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: var(--login-bg);
+    font-family: 'Poppins', sans-serif;
+}
+
+.login-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    max-width: 850px;
+    min-height: 600px;
+    background-color: var(--login-card-bg);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+.login-form-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 3rem 4rem;
+}
+
+.login-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.login-header p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 2.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#login-form label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+#login-form input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: none;
+    background-color: var(--login-input-bg);
+    border-radius: 12px;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    font-family: 'Poppins', sans-serif;
+    color: var(--text-primary);
+}
+
+#login-form #login-btn {
+    width: 100%;
+    padding: 0.8rem;
+    margin-top: 1rem;
+    border-radius: 12px;
+}
+
+.login-logo-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--login-accent-yellow);
+    background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 15px,
+        rgba(0, 0, 0, 0.04) 15px,
+        rgba(0, 0, 0, 0.04) 30px
+    );
+    padding: 2rem;
+}
+
+.login-logo-panel img {
+    width: 70%;
+    max-width: 280px;
+}
+
+
+@media (max-width: 800px) {
+    body {
+       
+        align-items: center;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
+    .login-container {
+       
+        grid-template-columns: 1fr;
+        width: 90%;
+        max-width: 400px;
+        min-height: auto;
+    }
+
+    .login-logo-panel {
+       
+        order: -1; 
+        padding: 2.5rem 2rem;
+    }
+    .login-logo-panel img {
+        width: 150px;
+    }
+
+    .login-form-panel {
+        padding: 2.5rem;
+    }
+
+    .login-header h1 {
+        font-size: 2rem; 
+    }
+}
