@@ -1,4 +1,4 @@
-/* https://www.youtube.com/watch?v=dQw4w9WgXcQ
+  /* https://www.youtube.com/watch?v=dQw4w9WgXcQ
 
   https://www.youtube.com/watch?v=dQw4w9WgXcQ
 
@@ -172,7 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const verifyCertificate = async (certId) => {
         if (!certId) return;
-        window.va('event', 'verify_attempt');
         stopScanner();
         showLoadingState(true);
         try {
@@ -180,11 +179,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 const data = await response.json();
                 displayVerificationResult(data);
-                window.va('event', 'verify_success', { controlNumber: certId });
             } else {
                 const errorData = await response.json();
                 displayError(errorData.message || `Certificate ${certId} not found.`);
-                window.va('event', 'verify_fail', { controlNumber: certId });
             }
         } catch (error) {
             console.error('Fetch Error:', error);
@@ -270,15 +267,8 @@ document.addEventListener('DOMContentLoaded', () => {
         verifyCertificate(certNoInput.value.trim());
     });
     
-    verifyAnotherLink.addEventListener('click', () => {
-        window.va('event', 'verify_another');
-        resetToFormView();
-    });
-
-    scanQrBtn.addEventListener('click', () => {
-        window.va('event', 'scan_qr_start');
-        startScanner();
-    });
+    verifyAnotherLink.addEventListener('click', resetToFormView);
+    scanQrBtn.addEventListener('click', startScanner);
     
     checkUrlForCertId();
 });
