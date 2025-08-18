@@ -19,13 +19,15 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
 
-  <!-- https://www.youtube.com/watch?v=dQw4w9WgXcQ
+<!-- https://www.youtube.com/watch?v=dQw4w9WgXcQ
 
   https://www.youtube.com/watch?v=dQw4w9WgXcQ
 
   https://www.youtube.com/watch?v=dQw4w9WgXcQ -->
+
   <body>
     <header class="app-header">
       <div class="header-left">
@@ -49,140 +51,131 @@
 
     <main class="main-content">
       <div class="page-header">
-        <h1 id="page-title">Create Certificate</h1>
+        <h1 id="page-title">Analytics Dashboard</h1>
         <p id="page-subtitle" class="subtitle">
-          Fill in the details for a single certificate.
+          An overview of certificate issuance and engagement.
         </p>
       </div>
 
       <div class="admin-tabs">
-        <button id="create-tab-btn" class="tab-btn active">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="btn-icon"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
+        <button id="analytics-tab-btn" class="tab-btn active">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="btn-icon">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
           </svg>
+          <span>Analytics</span>
+        </button>
+        <button id="create-tab-btn" class="tab-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="btn-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           <span>Create</span>
         </button>
         <button id="manage-tab-btn" class="tab-btn">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="btn-icon"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"
-            />
-          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="btn-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"/></svg>
           <span>Manage</span>
         </button>
         <button id="find-tab-btn" class="tab-btn">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="btn-icon"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-            />
-          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="btn-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
           <span>Find Existing</span>
         </button>
         <button id="bulk-add-tab-btn" class="tab-btn">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="btn-icon"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M9 13.5l3 3m0 0l3-3m-3 3v-6m1.06-4.19l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
-            />
-          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="btn-icon"><path stroke-linecap="round" stroke-linejoin="round" d="M9 13.5l3 3m0 0l3-3m-3 3v-6m1.06-4.19l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"/></svg>
           <span>Bulk Add</span>
         </button>
       </div>
+      
+      <div id="analytics-view">
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <span class="kpi-title">Total Certificates</span>
+                <span class="kpi-value" id="kpi-total-certs">--</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-title">Total Unique Events</span>
+                <span class="kpi-value" id="kpi-total-events">--</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-title">Total Unique Recipients</span>
+                <span class="kpi-value" id="kpi-total-recipients">--</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-title">Busiest Month</span>
+                <span class="kpi-value" id="kpi-busiest-month">--</span>
+            </div>
+        </div>
+        <div class="charts-grid">
+            <div class="card chart-container">
+                <div class="chart-header">
+                    <h3>Issuance Trends</h3>
+                    <div class="time-filter-group" id="issuance-time-filter">
+                        <button class="time-filter-btn active" data-period="daily">Daily (30d)</button>
+                        <button class="time-filter-btn" data-period="monthly">Monthly</button>
+                        <button class="time-filter-btn" data-period="yearly">Yearly</button>
+                    </div>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="issuance-chart"></canvas>
+                </div>
+            </div>
+            <div class="card chart-container">
+                <div class="chart-header">
+                    <h3>Breakdown by Type</h3>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="type-chart"></canvas>
+                </div>
+            </div>
+            <div class="card chart-container full-width">
+                <div class="chart-header">
+                    <h3>Top 10 Events by Attendance</h3>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="events-chart"></canvas>
+                </div>
+            </div>
+            <div class="card chart-container">
+                <div class="chart-header">
+                    <h3>Top Encoders</h3>
+                </div>
+                <div class="chart-canvas-wrapper">
+                    <canvas id="encoders-chart"></canvas>
+                </div>
+            </div>
+            <div class="card chart-container">
+                <div class="chart-header">
+                    <h3>Top Recipients</h3>
+                </div>
+                <div class="table-wrapper-sm">
+                    <table class="data-table">
+                        <thead><tr><th>Name</th><th>Count</th></tr></thead>
+                        <tbody id="top-recipients-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+      </div>
 
-      <div id="create-view">
+      <div id="create-view" class="hidden">
         <div class="admin-content-body">
           <div class="card form-card">
             <form id="generate-form">
               <div class="form-grid">
-                <div class="form-group">
-                  <label for="encoder-email">Encoder Email</label
-                  ><input
-                    type="email"
-                    id="encoder-email"
-                    placeholder="encoder@isatu.edu.ph"
-                    required
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="encoder-name">Encoder Name</label
-                  ><input
-                    type="text"
-                    id="encoder-name"
-                    placeholder="Full Name"
-                    required
-                  />
-                </div>
+                <div class="form-group"><label for="encoder-email">Encoder Email</label><input type="email" id="encoder-email" placeholder="encoder@isatu.edu.ph" required/></div>
+                <div class="form-group"><label for="encoder-name">Encoder Name</label><input type="text" id="encoder-name" placeholder="Full Name" required/></div>
               </div>
-              <div class="form-group">
-                <label for="recipient-name">Certificate Recipient</label
-                ><input
-                  type="text"
-                  id="recipient-name"
-                  placeholder="Full Name of Recipient"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label for="event-name">Event Name</label
-                ><input
-                  type="text"
-                  id="event-name"
-                  placeholder="Name of the Event"
-                  required
-                />
-              </div>
+              <div class="form-group"><label for="recipient-name">Certificate Recipient</label><input type="text" id="recipient-name" placeholder="Full Name of Recipient" required/></div>
+              <div class="form-group"><label for="event-name">Event Name</label><input type="text" id="event-name" placeholder="Name of the Event" required/></div>
               <div class="form-grid">
                 <div class="form-group">
-                  <label for="certificate-type">Select Certificate Type</label
-                  ><select id="certificate-type" required>
-                    <option value="" disabled selected>
-                      Choose certificate type
-                    </option>
+                  <label for="certificate-type">Select Certificate Type</label>
+                  <select id="certificate-type" required>
+                    <option value="" disabled selected>Choose certificate type</option>
                     <option value="Appreciation">Appreciation</option>
                     <option value="Recognition">Recognition</option>
                     <option value="Participation">Participation</option>
                   </select>
                 </div>
                 <div class="form-group">
-                  <label for="role-select">Select Role</label
-                  ><select id="role-select" required>
+                  <label for="role-select">Select Role</label>
+                  <select id="role-select" required>
                     <option value="" disabled selected>Choose role</option>
                     <option value="Participant">Participant</option>
                     <option value="Facilitator">Facilitator</option>
@@ -190,39 +183,11 @@
                   </select>
                 </div>
               </div>
-              <div class="form-group hidden" id="other-role-group">
-                <label for="other-role-input">Specify Other Role</label
-                ><input
-                  type="text"
-                  id="other-role-input"
-                  placeholder="e.g., Speaker, Organizer"
-                />
-              </div>
-              <div class="form-group">
-                <label for="venue">Venue</label
-                ><input
-                  type="text"
-                  id="venue"
-                  placeholder="Event Venue"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label for="theme">Theme</label
-                ><textarea
-                  id="theme"
-                  rows="2"
-                  placeholder="Event Theme or Description"
-                  required
-                ></textarea>
-              </div>
-              <div class="form-group">
-                <label for="date-given">Date Given</label
-                ><input type="date" id="date-given" required />
-              </div>
-              <button type="submit" class="btn btn-primary full-width">
-                Generate Certificate
-              </button>
+              <div class="form-group hidden" id="other-role-group"><label for="other-role-input">Specify Other Role</label><input type="text" id="other-role-input" placeholder="e.g., Speaker, Organizer"/></div>
+              <div class="form-group"><label for="venue">Venue</label><input type="text" id="venue" placeholder="Event Venue" required/></div>
+              <div class="form-group"><label for="theme">Theme</label><textarea id="theme" rows="2" placeholder="Event Theme or Description" required></textarea></div>
+              <div class="form-group"><label for="date-given">Date Given</label><input type="date" id="date-given" required/></div>
+              <button type="submit" class="btn btn-primary full-width">Generate Certificate</button>
             </form>
           </div>
         </div>
@@ -231,16 +196,20 @@
       <div id="manage-view" class="hidden">
         <div class="card">
           <div class="manage-view-header">
-            <input
-              type="search"
-              id="search-input"
-              placeholder="Search by name, event, or control no..."
-            />
+            <input type="search" id="search-input" placeholder="Search by name, event, or control no..."/>
+            <div class="export-dropdown">
+                <button id="export-btn" class="btn btn-outline">Export...</button>
+                <div class="export-options hidden">
+                    <a href="#" id="export-xlsx-btn">Export as Excel (.xlsx)</a>
+                    <a href="#" id="export-pdf-btn">Export as PDF</a>
+                </div>
+            </div>
           </div>
           <div class="table-wrapper">
             <table class="data-table">
               <thead>
                 <tr>
+                  <th class="selection-cell"><input type="checkbox" id="select-all-checkbox" /></th>
                   <th>Recipient Name</th>
                   <th>Event Name</th>
                   <th>Date Given</th>
@@ -254,9 +223,8 @@
           <div class="pagination-controls">
             <span id="page-info"></span>
             <div class="button-group">
-              <button id="prev-page-btn" class="btn btn-outline">
-                Previous</button
-              ><button id="next-page-btn" class="btn btn-outline">Next</button>
+              <button id="prev-page-btn" class="btn btn-outline">Previous</button>
+              <button id="next-page-btn" class="btn btn-outline">Next</button>
             </div>
           </div>
         </div>
@@ -266,35 +234,17 @@
         <div class="admin-content-body">
           <div class="card">
             <form id="find-form">
-              <div class="form-group">
-                <label for="find-control-no-input">Enter Control Number</label
-                ><input
-                  type="text"
-                  id="find-control-no-input"
-                  placeholder="ISATU-SR-XX-25-XXXXX"
-                  required
-                />
-              </div>
-              <button type="submit" class="btn btn-dark full-width">
-                Find Certificate & Generate QR
-              </button>
+              <div class="form-group"><label for="find-control-no-input">Enter Control Number</label><input type="text" id="find-control-no-input" placeholder="ISATU-SR-XX-25-XXXXX" required/></div>
+              <button type="submit" class="btn btn-dark full-width">Find Certificate & Generate QR</button>
             </form>
-            <div
-              id="find-result-container"
-              class="find-result-container hidden"
-            >
+            <div id="find-result-container" class="find-result-container hidden">
               <h3 id="found-recipient-name" class="recipient-name-header"></h3>
-              <div class="qr-code-display">
-                <img id="generated-qr-code" src="" alt="Generated QR Code" />
-              </div>
+              <div class="qr-code-display"><img id="generated-qr-code" src="" alt="Generated QR Code" /></div>
               <p id="generated-control-number" class="certificate-id"></p>
               <div class="button-group" style="justify-content: center">
-                <button id="save-qr-btn" class="btn btn-outline">Save QR</button
-                ><button id="copy-qr-image-btn" class="btn btn-outline">
-                  Copy QR</button
-                ><button id="copy-control-no-btn" class="btn btn-outline">
-                  Copy No.
-                </button>
+                <button id="save-qr-btn" class="btn btn-outline">Save QR</button>
+                <button id="copy-qr-image-btn" class="btn btn-outline">Copy QR</button>
+                <button id="copy-control-no-btn" class="btn btn-outline">Copy No.</button>
               </div>
             </div>
           </div>
@@ -305,124 +255,64 @@
         <div class="admin-content-body">
           <div class="card bulk-card">
             <div class="card-header-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M9 13.5l3 3m0 0l3-3m-3 3v-6m1.06-4.19l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"
-                />
-              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 13.5l3 3m0 0l3-3m-3 3v-6m1.06-4.19l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"/></svg>
               <h3>Bulk Add Certificates</h3>
             </div>
-            <p class="card-subtitle">
-              Copy and paste data from your Google Sheet. Do not include the
-              header row.
-            </p>
+            <p class="card-subtitle">Copy and paste data from your Google Sheet. Do not include the header row.</p>
             <div class="required-columns-info">
-              <strong>Required Columns (11):</strong><br />Timestamp | Encoder
-              Email | Encoder Name | Recipient | Event | Type | Role | Venue |
-              Theme | Date Given | Control Number
+              <strong>Required Columns (11):</strong><br />Timestamp | Encoder Email | Encoder Name | Recipient | Event | Type | Role | Venue | Theme | Date Given | Control Number
             </div>
-            <textarea
-              id="bulk-data-input"
-              placeholder="8/13/2025...	encoder@...	Encoder Name	... (paste rows here)"
-            ></textarea>
+            <textarea id="bulk-data-input" placeholder="8/13/2025...	encoder@...	Encoder Name	... (paste rows here)"></textarea>
             <div class="button-group">
-              <button id="preview-bulk-btn" class="btn btn-outline">
-                Preview</button
-              ><button id="process-bulk-btn" class="btn btn-primary" disabled>
-                Process Bulk Data
-              </button>
+              <button id="preview-bulk-btn" class="btn btn-outline">Preview</button>
+              <button id="process-bulk-btn" class="btn btn-primary" disabled>Process Bulk Data</button>
             </div>
           </div>
           <div class="card side-card">
-    
-    <div id="bulk-results-container">
-     
-        <div class="card-header-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-             <h3>Bulk Import Preview</h3>
-        </div>
-        <div id="bulk-preview-area">
-            <p class="card-subtitle">Click "Preview" to see a summary of your data before importing.</p>
-        </div>
-    </div>
-</div>
+            <div id="bulk-results-container">
+              <div class="card-header-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                  <h3>Bulk Import Preview</h3>
+              </div>
+              <div id="bulk-preview-area">
+                  <p class="card-subtitle">Click "Preview" to see a summary of your data before importing.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </main>
 
     <div class="modal-overlay" id="app-modal">
       <div class="modal-container">
-        <div class="modal-header">
-          <h3 class="modal-title" id="modal-title">Notification</h3>
-        </div>
-        <p class="modal-message" id="modal-message">
-          This is a sample message.
-        </p>
-        <div class="modal-footer">
-          <button class="btn btn-dark" id="modal-ok-btn">OK</button>
-        </div>
+        <div class="modal-header"><h3 class="modal-title" id="modal-title">Notification</h3></div>
+        <p class="modal-message" id="modal-message">This is a sample message.</p>
+        <div class="modal-footer"><button class="btn btn-dark" id="modal-ok-btn">OK</button></div>
       </div>
     </div>
 
-    <!-- REPLACE the old #edit-modal with this new version -->
-<div class="modal-overlay" id="edit-modal">
-    <div class="modal-container">
+    <div class="modal-overlay" id="edit-modal">
+      <div class="modal-container">
         <form id="edit-form">
             <h3 class="edit-modal-title">Edit Certificate</h3>
+            <div class="form-row"><span class="form-label">Control Number</span><span id="edit-control-number" class="form-value"></span></div>
+            <div class="form-row"><label for="edit-recipient-name" class="form-label">Recipient Name</label><input type="text" id="edit-recipient-name" required></div>
+            <div class="form-row"><label for="edit-event-name" class="form-label">Event Name</label><input type="text" id="edit-event-name" required></div>
             <div class="form-row">
-                <span class="form-label">Control Number</span>
-                <span id="edit-control-number" class="form-value"></span>
+                <div class="form-half"><label for="edit-certificate-type" class="form-label">Certificate Type</label><select id="edit-certificate-type" required><option value="Appreciation">Appreciation</option><option value="Recognition">Recognition</option><option value="Participation">Participation</option></select></div>
+                <div class="form-half"><label for="edit-role" class="form-label">Role</label><input type="text" id="edit-role" required></div>
             </div>
-            <div class="form-row">
-                <label for="edit-recipient-name" class="form-label">Recipient Name</label>
-                <input type="text" id="edit-recipient-name" required>
-            </div>
-            <div class="form-row">
-                <label for="edit-event-name" class="form-label">Event Name</label>
-                <input type="text" id="edit-event-name" required>
-            </div>
-            <div class="form-row">
-                <div class="form-half">
-                    <label for="edit-certificate-type" class="form-label">Certificate Type</label>
-                    <select id="edit-certificate-type" required>
-                        <option value="Appreciation">Appreciation</option>
-                        <option value="Recognition">Recognition</option>
-                        <option value="Participation">Participation</option>
-                    </select>
-                </div>
-                <div class="form-half">
-                    <label for="edit-role" class="form-label">Role</label>
-                    <input type="text" id="edit-role" required>
-                </div>
-            </div>
-            <div class="form-row">
-                <label for="edit-date-given" class="form-label">Date Given</label>
-                <input type="date" id="edit-date-given" required>
-            </div>
+            <div class="form-row"><label for="edit-date-given" class="form-label">Date Given</label><input type="date" id="edit-date-given" required></div>
             <div class="edit-modal-footer">
                 <button type="button" id="edit-cancel-btn" class="btn btn-outline">Cancel</button>
                 <button type="submit" class="btn btn-dark">Save Changes</button>
             </div>
         </form>
+      </div>
     </div>
-</div>
 
-    <script
-      defer
-      src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-    ></script>
-    <script
-      defer
-      src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"
-    ></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
     <script defer src="./assets/js/supabase-client.js"></script>
     <script defer src="./assets/js/admin.js"></script>
     <script src="/_vercel/insights/script.js"></script>

@@ -1,5 +1,4 @@
-
-  /* https://www.youtube.com/watch?v=dQw4w9WgXcQ
+/* https://www.youtube.com/watch?v=dQw4w9WgXcQ
 
   https://www.youtube.com/watch?v=dQw4w9WgXcQ
 
@@ -98,6 +97,10 @@
 }
 .manage-view-header {
   margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 #search-input {
   width: 100%;
@@ -274,7 +277,6 @@
   border-collapse: collapse;
   font-size: 0.875rem;
   table-layout: fixed;
-  
 }
 .preview-table th,
 .preview-table td {
@@ -283,7 +285,6 @@
   text-align: left;
   white-space: nowrap;
   overflow-y: auto;
- 
 }
 
 
@@ -292,7 +293,6 @@
   font-weight: 600;
   position: sticky;
   top: 0;
-  
 }
 
 .preview-table-wrapper::-webkit-scrollbar {
@@ -442,23 +442,140 @@
   white-space: normal;
 }
 
-.results-table .success-row td {
-  background-color: #f0fdf4;
-  color: #166534;
+.selection-cell {
+  width: 1%;
+  text-align: center !important;
 }
 
-.results-table .failed-row td {
-  background-color: #fee2e2;
-  color: #991b1b;
+.export-dropdown {
+    position: relative;
+    margin-left: auto;
 }
 
-.results-table .message-col {
-  font-style: italic;
-  white-space: normal;
+.export-options {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 10;
+    width: 200px;
+    overflow: hidden;
+}
+
+.export-options a {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.export-options a:hover {
+    background-color: #f7f8fa;
+}
+
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.kpi-card {
+    background-color: var(--card-background);
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.kpi-title {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.kpi-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.chart-container {
+    padding: 1.5rem;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-canvas-wrapper {
+    position: relative;
+    flex-grow: 1;
+}
+
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.chart-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.time-filter-group {
+    display: flex;
+    background-color: #eef2f5;
+    border-radius: 8px;
+    padding: 0.2rem;
+}
+
+.time-filter-btn {
+    padding: 0.3rem 0.8rem;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.time-filter-btn.active {
+    background-color: var(--card-background);
+    color: var(--primary-dark);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.chart-container.full-width {
+    grid-column: 1 / -1;
+}
+
+.table-wrapper-sm {
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 @media (max-width: 1024px) {
   #bulk-add-view .admin-content-body {
+    grid-template-columns: 1fr;
+  }
+  .charts-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -473,9 +590,10 @@
   }
   .admin-tabs {
     width: 100%;
+    flex-wrap: wrap;
   }
   .tab-btn {
-    flex: 1;
+    flex-grow: 1;
     padding: 0.5rem 0.75rem;
   }
   .pagination-controls {
@@ -498,6 +616,11 @@
   #edit-form .form-half {
     width: 100%;
   }
+  .chart-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+  }
   
 }
 @media (max-width: 480px) {
@@ -506,5 +629,8 @@
   }
   .tab-btn {
     justify-content: center;
+  }
+  .manage-view-header #search-input {
+      max-width: 100%;
   }
 }
