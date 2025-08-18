@@ -230,6 +230,16 @@ document.addEventListener("DOMContentLoaded", () => {
             data.topRecipients.forEach(r => {
                 recipientsTable.innerHTML += `<tr><td>${r.recipient}</td><td>${r.count}</td></tr>`;
             });
+            
+            // THIS IS THE FIX: After rendering all charts, force a resize to ensure they adapt 
+            // to the container size after it has become visible.
+            setTimeout(() => {
+                Object.values(charts).forEach(chart => {
+                    if (chart) {
+                        chart.resize();
+                    }
+                });
+            }, 10);
 
         } catch (error) {
             console.error("Analytics Error:", error);
@@ -311,9 +321,7 @@ document.addEventListener("DOMContentLoaded", () => {
         analyticsView.classList.remove("hidden");
         pageTitle.textContent = "Analytics Dashboard";
         pageSubtitle.textContent = "An overview of certificate issuance and engagement.";
-        setTimeout(() => {
-            loadAnalyticsData();
-        }, 0);
+        loadAnalyticsData();
       } else if (activeTab === "create") {
         createTabBtn.classList.add("active");
         createView.classList.remove("hidden");
