@@ -3,6 +3,8 @@ const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
 const qrcode = require('qrcode');
 const path = require('path');
+const excel = require('exceljs');
+const PDFDocument = require('pdfkit');
 
 const app = express();
 const PORT = 3001;
@@ -72,6 +74,143 @@ app.get('/api/verify/:controlNumber', async (req, res) => {
 
     } catch (err) {
         res.status(500).json({ message: 'An internal server error occurred.' });
+    }
+});
+
+app.get('/api/analytics/summary', async (req, res) => {
+    try {
+        const { period } = req.query;
+        let trendRpc = 'count_monthly';
+        if (period === 'daily') trendRpc = 'count_daily';
+        if (period === 'yearly') trendRpc = 'count_yearly';
+
+        const [
+            totalCertsRes, 
+            byTypeRes, 
+            trendsRes,
+            monthlyRes, 
+            topEventsRes, 
+            topEncodersRes, 
+            topRecipientsRes
+        ] = await Promise.all([
+            supabase.from('certificates').select('*', { count: 'exact', head: true }),
+            supabase.rpc('count_by_type'),
+            supabase.rpc(trendRpc),
+            supabase.rpc('count_monthly'), 
+            supabase.rpc('top_events'),
+            supabase.rpc('top_encoders'),
+            supabase.rpc('top_recipients')
+        ]);
+        
+        const errors = [totalCertsRes.error, byTypeRes.error, trendsRes.error, monthlyRes.error, topEventsRes.error, topEncodersRes.error, topRecipientsRes.error].filter(Boolean);
+        if (errors.length > 0) {
+            console.error('Analytics error:', errors);
+            throw new Error('Failed to fetch analytics data.');
+        }
+
+        const totalEvents = new Set(topEventsRes.data.map(e => e.event)).size;
+        const totalRecipients = new Set(topRecipientsRes.data.map(r => r.recipient)).size;
+        const busiestMonth = monthlyRes.data.length ? monthlyRes.data.reduce((prev, current) => (prev.count > current.count) ? prev : current).month : 'N/A';
+        
+        res.json({
+            totalCerts: totalCertsRes.count,
+            totalEvents,
+            totalRecipients,
+            busiestMonth,
+            byType: byTypeRes.data,
+            trends: trendsRes.data,
+            topEvents: topEventsRes.data,
+            topEncoders: topEncodersRes.data,
+            topRecipients: topRecipientsRes.data,
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.post('/api/export/:format', async (req, res) => {
+    const { format } = req.params;
+    const { ids } = req.body || {};
+    const searchQuery = req.query.search || '';
+
+    try {
+        let query = supabase.from('certificates').select('*');
+
+        if (ids && ids.length > 0) {
+            query = query.in('control_number', ids);
+        } else if (searchQuery) {
+            query = query.or(`recipient_name.ilike.%${searchQuery}%,event_name.ilike.%${searchQuery}%,control_number.ilike.%${searchQuery}%`);
+        }
+
+        const { data, error } = await query.order('timestamp', { ascending: false });
+        if (error) throw error;
+        if (!data || data.length === 0) return res.status(404).send('No data to export.');
+
+        const fileName = `isatu-sr-export-${new Date().toISOString().slice(0,10)}`;
+        
+        if (format === 'xlsx') {
+            const workbook = new excel.Workbook();
+            const worksheet = workbook.addWorksheet('Certificates');
+            worksheet.columns = [
+                { header: 'Control Number', key: 'control_number', width: 30 },
+                { header: 'Recipient Name', key: 'recipient_name', width: 30 },
+                { header: 'Event Name', key: 'event_name', width: 40 },
+                { header: 'Date Given', key: 'date_given', width: 15 },
+                { header: 'Type', key: 'certificate_type', width: 15 },
+                { header: 'Role', key: 'role', width: 20 },
+                { header: 'Encoder Name', key: 'encoder_name', width: 30 },
+                { header: 'Timestamp', key: 'timestamp', width: 25 },
+            ];
+            worksheet.addRows(data);
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', `attachment; filename=${fileName}.xlsx`);
+            await workbook.xlsx.write(res);
+            res.end();
+        } else if (format === 'pdf') {
+            const doc = new PDFDocument({ margin: 30, size: 'A4', layout: 'landscape' });
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename=${fileName}.pdf`);
+            doc.pipe(res);
+            
+            doc.fontSize(16).text('ISATU Student Republic - Certificate Export', { align: 'center' });
+            doc.fontSize(10).text(`Generated on: ${new Date().toLocaleDateString()}`, { align: 'center' });
+            doc.moveDown(2);
+
+            const tableTop = doc.y;
+            const headers = ['Control No.', 'Recipient', 'Event', 'Date', 'Type'];
+            const colWidths = [120, 150, 200, 60, 80];
+            
+            let i = 0;
+            headers.forEach(header => {
+                doc.fontSize(10).text(header, 30 + i, tableTop, { width: colWidths[headers.indexOf(header)], align: 'left' });
+                i += colWidths[headers.indexOf(header)];
+            });
+            doc.y = tableTop + 20;
+
+            data.forEach(cert => {
+                const rowY = doc.y;
+                doc.fontSize(8).text(cert.control_number, 30, rowY, { width: 120 });
+                doc.text(cert.recipient_name, 150, rowY, { width: 150 });
+                doc.text(cert.event_name, 300, rowY, { width: 200 });
+                doc.text(new Date(cert.date_given).toLocaleDateString(), 500, rowY, { width: 60 });
+                doc.text(cert.certificate_type, 560, rowY, { width: 80 });
+                doc.moveDown(1.5);
+                if (doc.y > 500) {
+                    doc.addPage({ margin: 30, size: 'A4', layout: 'landscape' });
+                    doc.y = 40;
+                }
+            });
+
+            doc.end();
+        } else {
+            res.status(400).send('Invalid format requested.');
+        }
+
+    } catch (err) {
+        console.error(`Error exporting to ${format}:`, err);
+        res.status(500).send(`Failed to export data to ${format}.`);
     }
 });
 

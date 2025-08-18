@@ -1,4 +1,4 @@
-  /* https://www.youtube.com/watch?v=dQw4w9WgXcQ
+/* https://www.youtube.com/watch?v=dQw4w9WgXcQ
 
   https://www.youtube.com/watch?v=dQw4w9WgXcQ
 
@@ -84,13 +84,25 @@ document.addEventListener("DOMContentLoaded", () => {
     let debounceTimer;
     let parsedBulkData = [];
     let latestGeneratedData = null;
+    let selectedControlNumbers = new Set();
+    let currentVisibleIds = [];
+    let charts = {};
+    
+    const CHART_COLORS = {
+        primary: '#2c3e50',
+        accent: '#f1c40f',
+        grey: '#bdc3c7',
+        barPalette: ['#2c3e50', '#34495e', '#7f8c8d', '#95a5a6', '#bdc3c7', '#f1c40f', '#f39c12', '#e67e22', '#d35400', '#c0392b']
+    };
 
     const logoutBtn = document.getElementById("logout-btn");
+    const analyticsTabBtn = document.getElementById("analytics-tab-btn");
     const createTabBtn = document.getElementById("create-tab-btn");
     const manageTabBtn = document.getElementById("manage-tab-btn");
     const findTabBtn = document.getElementById("find-tab-btn");
     const bulkAddTabBtn = document.getElementById("bulk-add-tab-btn");
 
+    const analyticsView = document.getElementById("analytics-view");
     const createView = document.getElementById("create-view");
     const manageView = document.getElementById("manage-view");
     const findView = document.getElementById("find-view");
@@ -98,6 +110,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const pageTitle = document.getElementById("page-title");
     const pageSubtitle = document.getElementById("page-subtitle");
+
+    const issuanceTimeFilter = document.getElementById("issuance-time-filter");
 
     const generateForm = document.getElementById("generate-form");
     const roleSelect = document.getElementById("role-select");
@@ -109,6 +123,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const pageInfo = document.getElementById("page-info");
     const prevPageBtn = document.getElementById("prev-page-btn");
     const nextPageBtn = document.getElementById("next-page-btn");
+    const selectAllCheckbox = document.getElementById("select-all-checkbox");
+
+    const exportBtn = document.getElementById("export-btn");
+    const exportOptions = document.querySelector(".export-options");
+    const exportXlsxBtn = document.getElementById("export-xlsx-btn");
+    const exportPdfBtn = document.getElementById("export-pdf-btn");
 
     const editModal = document.getElementById("edit-modal");
     const editForm = document.getElementById("edit-form");
@@ -142,9 +162,83 @@ document.addEventListener("DOMContentLoaded", () => {
         ? "http://localhost:3001/api"
         : "/api";
 
+    const renderChart = (ctx, type, data, options) => {
+        const chartId = ctx.canvas.id;
+        if (charts[chartId]) {
+            charts[chartId].destroy();
+        }
+        charts[chartId] = new Chart(ctx, { type, data, options });
+    };
+
+    const getChartOptions = (options = {}) => ({
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    font: { family: "'Poppins', sans-serif", size: 12 }
+                }
+            }
+        },
+        scales: {
+            x: {
+                grid: { display: false },
+                ticks: { font: { family: "'Poppins', sans-serif" } }
+            },
+            y: {
+                grid: { color: '#eef2f5' },
+                ticks: { font: { family: "'Poppins', sans-serif" } }
+            }
+        },
+        ...options
+    });
+    
+    const loadAnalyticsData = async (period = 'monthly') => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/analytics/summary?period=${period}`);
+            if (!response.ok) throw new Error('Failed to load analytics data');
+            const data = await response.json();
+
+            document.getElementById('kpi-total-certs').textContent = data.totalCerts;
+            document.getElementById('kpi-total-events').textContent = data.totalEvents;
+            document.getElementById('kpi-total-recipients').textContent = data.totalRecipients;
+            document.getElementById('kpi-busiest-month').textContent = data.busiestMonth;
+            
+            renderChart(document.getElementById('issuance-chart').getContext('2d'), 'line', {
+                labels: data.trends.map(d => d.period),
+                datasets: [{ label: 'Certificates Issued', data: data.trends.map(d => d.count), borderColor: CHART_COLORS.primary, backgroundColor: 'rgba(44, 62, 80, 0.1)', tension: 0.1, fill: true }]
+            }, getChartOptions());
+
+            renderChart(document.getElementById('type-chart').getContext('2d'), 'doughnut', {
+                labels: data.byType.map(d => d.type),
+                datasets: [{ data: data.byType.map(d => d.count), backgroundColor: [CHART_COLORS.primary, CHART_COLORS.accent, CHART_COLORS.grey] }]
+            }, getChartOptions({ scales: { x: { display: false }, y: { display: false } }}));
+
+            renderChart(document.getElementById('events-chart').getContext('2d'), 'bar', {
+                labels: data.topEvents.map(d => d.event),
+                datasets: [{ label: 'Attendees', data: data.topEvents.map(d => d.count), backgroundColor: CHART_COLORS.barPalette }]
+            }, getChartOptions({ plugins: { legend: { display: false } } }));
+
+            renderChart(document.getElementById('encoders-chart').getContext('2d'), 'bar', {
+                labels: data.topEncoders.map(d => d.encoder),
+                datasets: [{ label: 'Certs Encoded', data: data.topEncoders.map(d => d.count), backgroundColor: CHART_COLORS.barPalette.slice().reverse() }]
+            }, getChartOptions({ plugins: { legend: { display: false } } }));
+            
+            const recipientsTable = document.getElementById('top-recipients-table-body');
+            recipientsTable.innerHTML = '';
+            data.topRecipients.forEach(r => {
+                recipientsTable.innerHTML += `<tr><td>${r.recipient}</td><td>${r.count}</td></tr>`;
+            });
+
+        } catch (error) {
+            console.error("Analytics Error:", error);
+        }
+    };
+    
     const fetchCertificates = async (page, search) => {
       try {
-        tableBody.innerHTML = `<tr><td colspan="5">Loading...</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="6">Loading...</td></tr>`;
         const response = await fetch(
           `${API_BASE_URL}/certificates?page=${page}&limit=${recordsPerPage}&search=${search}`
         );
@@ -153,34 +247,46 @@ document.addEventListener("DOMContentLoaded", () => {
         renderTable(data);
         renderPagination(total);
       } catch (error) {
-        tableBody.innerHTML = `<tr><td colspan="5">Error loading data. Please try again.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="6">Error loading data. Please try again.</td></tr>`;
       }
     };
 
     const renderTable = (certificates) => {
       tableBody.innerHTML = "";
+      currentVisibleIds = certificates.map(c => c.control_number);
       if (certificates.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No certificates found.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No certificates found.</td></tr>`;
         return;
       }
       certificates.forEach((cert) => {
+        const isChecked = selectedControlNumbers.has(cert.control_number);
         const row = document.createElement("tr");
         row.innerHTML = `
+                    <td class="selection-cell"><input type="checkbox" data-id="${cert.control_number}" ${isChecked ? 'checked' : ''}></td>
                     <td>${cert.recipient_name}</td>
                     <td>${cert.event_name}</td>
                     <td>${new Date(cert.date_given).toLocaleDateString()}</td>
                     <td>${cert.control_number}</td>
                     <td class="actions-cell">
-                        <button class="btn btn-edit" data-id="${
-                          cert.control_number
-                        }">Edit</button>
-                        <button class="btn btn-delete" data-id="${
-                          cert.control_number
-                        }">Delete</button>
+                        <button class="btn btn-edit" data-id="${cert.control_number}">Edit</button>
+                        <button class="btn btn-delete" data-id="${cert.control_number}">Delete</button>
                     </td>
                 `;
         tableBody.appendChild(row);
       });
+      updateSelectionUI();
+    };
+
+    const updateSelectionUI = () => {
+        const selectionCount = selectedControlNumbers.size;
+        if (selectionCount > 0) {
+            exportBtn.textContent = `Export ${selectionCount} selected...`;
+        } else {
+            exportBtn.textContent = 'Export...';
+        }
+        
+        const allVisibleSelected = currentVisibleIds.length > 0 && currentVisibleIds.every(id => selectedControlNumbers.has(id));
+        selectAllCheckbox.checked = allVisibleSelected;
     };
 
     const renderPagination = (total) => {
@@ -193,13 +299,22 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const setActiveTab = (activeTab) => {
-      [createTabBtn, manageTabBtn, findTabBtn, bulkAddTabBtn].forEach((btn) =>
+      [analyticsTabBtn, createTabBtn, manageTabBtn, findTabBtn, bulkAddTabBtn].forEach((btn) =>
         btn.classList.remove("active")
       );
-      [createView, manageView, findView, bulkAddView].forEach((view) =>
+      [analyticsView, createView, manageView, findView, bulkAddView].forEach((view) =>
         view.classList.add("hidden")
       );
-      if (activeTab === "create") {
+
+      if (activeTab === "analytics") {
+        analyticsTabBtn.classList.add("active");
+        analyticsView.classList.remove("hidden");
+        pageTitle.textContent = "Analytics Dashboard";
+        pageSubtitle.textContent = "An overview of certificate issuance and engagement.";
+        setTimeout(() => {
+            loadAnalyticsData();
+        }, 0);
+      } else if (activeTab === "create") {
         createTabBtn.classList.add("active");
         createView.classList.remove("hidden");
         pageTitle.textContent = "Create Certificate";
@@ -239,8 +354,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const handleTableClick = (e) => {
       const editBtn = e.target.closest(".btn-edit");
       const deleteBtn = e.target.closest(".btn-delete");
+      const checkbox = e.target.closest('input[type="checkbox"]');
+      
       if (editBtn) handleEdit(editBtn.dataset.id);
       if (deleteBtn) handleDelete(deleteBtn.dataset.id);
+      if (checkbox && checkbox.dataset.id) {
+          const controlId = checkbox.dataset.id;
+          if (checkbox.checked) {
+              selectedControlNumbers.add(controlId);
+          } else {
+              selectedControlNumbers.delete(controlId);
+          }
+          updateSelectionUI();
+      }
     };
 
     const handleEdit = async (controlNumber) => {
@@ -279,6 +405,8 @@ document.addEventListener("DOMContentLoaded", () => {
           "Certificate deleted successfully.",
           "success"
         );
+        selectedControlNumbers.delete(controlNumber);
+        updateSelectionUI();
         fetchCertificates(currentPage, currentSearch);
       } catch (error) {
         showNotification("Error", "Could not delete certificate.", "error");
@@ -328,19 +456,88 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     };
 
+    const handleExport = async (format) => {
+        let payload;
+        const search = currentSearch;
+        const useSelection = selectedControlNumbers.size > 0;
+
+        if (useSelection) {
+            payload = {
+                ids: Array.from(selectedControlNumbers)
+            };
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/export/${format}?search=${encodeURIComponent(search)}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: useSelection ? JSON.stringify(payload) : null,
+            });
+
+            if (!response.ok) {
+                throw new Error(`Export failed with status ${response.status}`);
+            }
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            const disposition = response.headers.get('content-disposition');
+            let filename = `export.${format}`;
+            if (disposition && disposition.indexOf('attachment') !== -1) {
+                const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                const matches = filenameRegex.exec(disposition);
+                if (matches != null && matches[1]) { 
+                  filename = matches[1].replace(/['"]/g, '');
+                }
+            }
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            a.remove();
+            
+            if(useSelection) {
+                selectedControlNumbers.clear();
+                fetchCertificates(currentPage, currentSearch);
+            }
+
+        } catch (error) {
+            showNotification('Export Error', `Could not generate the ${format.toUpperCase()} file.`, 'error');
+            console.error('Export error:', error);
+        } finally {
+            exportOptions.classList.add('hidden');
+        }
+    };
+
     logoutBtn.addEventListener("click", async () => {
       await supabase.auth.signOut();
       window.location.href = "/login.html";
     });
+    
+    analyticsTabBtn.addEventListener("click", () => setActiveTab("analytics"));
     createTabBtn.addEventListener("click", () => setActiveTab("create"));
     manageTabBtn.addEventListener("click", () => setActiveTab("manage"));
     findTabBtn.addEventListener("click", () => setActiveTab("find"));
     bulkAddTabBtn.addEventListener("click", () => setActiveTab("bulk"));
 
+    issuanceTimeFilter.addEventListener('click', (e) => {
+        const target = e.target.closest('.time-filter-btn');
+        if (!target) return;
+        
+        issuanceTimeFilter.querySelector('.active').classList.remove('active');
+        target.classList.add('active');
+        
+        const period = target.dataset.period;
+        loadAnalyticsData(period);
+    });
+
     roleSelect.addEventListener("change", () => {
       otherRoleGroup.classList.toggle("hidden", roleSelect.value !== "Other");
       otherRoleInput.required = roleSelect.value === "Other";
     });
+
     generateForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       let roleValue =
@@ -402,6 +599,33 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     tableBody.addEventListener("click", handleTableClick);
+    
+    selectAllCheckbox.addEventListener('change', (e) => {
+        const isChecked = e.target.checked;
+        currentVisibleIds.forEach(id => {
+            if (isChecked) {
+                selectedControlNumbers.add(id);
+            } else {
+                selectedControlNumbers.delete(id);
+            }
+        });
+        
+        Array.from(tableBody.querySelectorAll('input[type="checkbox"]')).forEach(box => {
+            box.checked = isChecked;
+        });
+
+        updateSelectionUI();
+    });
+
+    exportBtn.addEventListener('click', () => exportOptions.classList.toggle('hidden'));
+    document.addEventListener('click', (e) => {
+        if (!exportBtn.contains(e.target) && !exportOptions.contains(e.target)) {
+            exportOptions.classList.add('hidden');
+        }
+    });
+    exportXlsxBtn.addEventListener('click', (e) => { e.preventDefault(); handleExport('xlsx'); });
+    exportPdfBtn.addEventListener('click', (e) => { e.preventDefault(); handleExport('pdf'); });
+
     editForm.addEventListener("submit", handleEditFormSubmit);
     editCancelBtn.addEventListener("click", () =>
       editModal.classList.remove("visible")
@@ -607,7 +831,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-    setActiveTab("create");
+    setActiveTab("analytics");
   };
 
   initializeAdminPage();
