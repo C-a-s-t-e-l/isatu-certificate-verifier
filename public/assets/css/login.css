@@ -116,17 +116,16 @@ body {
 @media (max-width: 800px) {
     body {
        
-        align-items: center;
-        padding-top: 2rem;
-        padding-bottom: 2rem;
+    align-items: flex-start; 
+    padding: 2rem 1rem;
     }
 
     .login-container {
        
-        grid-template-columns: 1fr;
-        width: 90%;
-        max-width: 400px;
-        min-height: auto;
+    grid-template-columns: 1fr;
+    width: 100%; 
+    max-width: 400px;
+    min-height: auto;
     }
 
     .login-logo-panel {
