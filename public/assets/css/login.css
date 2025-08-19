@@ -115,33 +115,44 @@ body {
 
 @media (max-width: 800px) {
     body {
-       
-    align-items: flex-start; 
-    padding: 2rem 1rem;
+        align-items: flex-start;
+        padding: 1.5rem 1rem; 
     }
 
     .login-container {
-       
-    grid-template-columns: 1fr;
-    width: 100%; 
-    max-width: 400px;
-    min-height: auto;
+        grid-template-columns: 1fr;
+        width: 100%;
+        max-width: 400px;
+        min-height: auto;
     }
 
     .login-logo-panel {
-       
         order: -1; 
-        padding: 2.5rem 2rem;
+        padding: 1.5rem;
     }
     .login-logo-panel img {
-        width: 150px;
+        width: 120px; 
     }
 
     .login-form-panel {
-        padding: 2.5rem;
+        padding: 2rem 1.5rem;
     }
 
     .login-header h1 {
-        font-size: 2rem; 
+        font-size: 1.8rem; 
+        margin-bottom: 0.5rem;
+    }
+    
+    .login-header p {
+        margin-bottom: 1.5rem;
+    }
+    
+    #login-form input {
+        margin-bottom: 1rem;
+        padding: 0.75rem 1rem;
+    }
+    
+    #login-form #login-btn {
+        margin-top: 0.5rem;
     }
 }
